@@ -62,19 +62,24 @@ Filter the following and change according to your needs:
 
 Nothing to see here...
 
-== Arbitrary section ==
+== Usage Notes ==
 
 = Function Reference = 
 
-API Functions
-
-@return array List of all zones
 `z_get_zones()`
 
-@param $zone int|string ID or Slug of the zone
-@return array Zone object
+@return array List of all zones
+
+
 `z_get_zone( $zone )`
 
 @param $zone int|string ID or Slug of the zone
-@return array List of orders post objects
+
+@return array Zone object
+
+
 `z_get_posts_in_zone( $zone )`
+
+@param $zone int|string ID or Slug of the zone
+
+@return array List of orders post objects
