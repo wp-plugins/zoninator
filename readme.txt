@@ -55,6 +55,10 @@ Filter the following and change according to your needs:
 
 == Changelog ==
 
+= 0.2 = 
+
+* Bug fix: Custom Post Types not being included in search. Thanks Shawn!
+
 = 0.1 =
 * Initial Release!
 
@@ -66,20 +70,20 @@ Nothing to see here...
 
 = Function Reference = 
 
-`z_get_zones()`
-
+`
 @return array List of all zones
+z_get_zones()
+`
 
-
-`z_get_zone( $zone )`
-
+`
 @param $zone int|string ID or Slug of the zone
+@return array Zone objec
+t
+z_get_zone( $zone )
+`
 
-@return array Zone object
-
-
-`z_get_posts_in_zone( $zone )`
-
+`
 @param $zone int|string ID or Slug of the zone
-
 @return array List of orders post objects
+z_get_posts_in_zone( $zone )
+`
