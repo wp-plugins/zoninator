@@ -69,7 +69,7 @@ class Zoninator
 			'error-zone-lock-max' => __( 'Sorry, you have reached the maximum idle limit and will now be redirected to the Dashboard.', 'zoninator' ),
 		);
 		
-		$this->post_types = array( 'post' );
+		$this->default_post_types = array( 'post' );
 		
 		$this->zone_lock_period = apply_filters( 'zoninator_zone_lock_period', $this->zone_lock_period );
 		$this->zone_max_lock_period = apply_filters( 'zoninator_zone_max_lock_period', $this->zone_max_lock_period );
@@ -80,7 +80,7 @@ class Zoninator
 		do_action( 'zoninator_pre_init' );
 		
 		// Default post type support
-		foreach( $this->post_types as $post_type )
+		foreach( $this->default_post_types as $post_type )
 			add_post_type_support( $post_type, $this->zone_taxonomy );
 		
 		// Register taxonomy
