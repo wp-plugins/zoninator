@@ -1247,24 +1247,4 @@ class Zoninator
 global $zoninator;
 $zoninator = new Zoninator;
 
-function zoninator_debug() {
-	global $zoninator;
-	
-	echo '<h1>Debug</h1>';
-	
-	z_zoninator_debug( 'All zones:', z_get_zones() );
-	z_zoninator_debug( 'Zone Posts:', z_get_posts_in_zone( 'featured' ) );
-	
-}
-
-function z_zoninator_debug( $name, $debug = '' ) {
-	if( WP_DEBUG ) {
-		echo '<p>'. $name .'</p>';
-		echo '<pre>';
-		var_dump( $debug );
-		echo '</pre>';
-		echo '<hr/>';
-	}
-}
-
 endif;
