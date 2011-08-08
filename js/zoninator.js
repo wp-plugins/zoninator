@@ -38,7 +38,7 @@ var zoninator = {}
 		// TODO: This is really simplistic validation; beef it up a bit.
 		$('#zone-info').submit(function(e) {
 			var $form = $(this);
-			var $name = $form.find('input[name=name]');
+			var $name = $form.find('input[name="name"]');
 			if( !$name.val().trim() ) {
 				$name.closest( '.zone-field' ).addClass('error'); 
 				return false;
