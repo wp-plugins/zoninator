@@ -615,6 +615,8 @@ class Zoninator
 			
 			$post_types = $this->get_supported_post_types();
 			$limit = $this->_get_request_var( 'limit', $this->posts_per_page );
+			if( $limit <= 0 )
+				$limit = $this->posts_per_page; 
 			$exclude = (array) $this->_get_request_var( 'exclude', array(), 'absint' );
 			
 			$args = array(
@@ -629,14 +631,13 @@ class Zoninator
 				'suppress_filters' => true,
 			);
 			
-			$query = new WP_Query;
-			$posts = $query->query( $args );
+			$query = new WP_Query( $args );
 			$stripped_posts = array();
 			
-			if ( ! $query->post_count )
+			if ( ! $query->have_posts() )
 				exit;
 			
-			foreach( $posts as $post ) {
+			foreach( $query->posts as $post ) {
 				$stripped_posts[] = array(
 					'title' => ! empty( $post->post_title ) ? $post->post_title : __( '(no title)', 'zoninator' ),
 					'post_id' => $post->ID,
