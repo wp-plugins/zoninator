@@ -33,7 +33,6 @@ if( ! class_exists( 'Zoninator' ) ) :
 define( 'ZONINATOR_VERSION', '0.1' );
 define( 'ZONINATOR_PATH', dirname( __FILE__ ) );
 define( 'ZONINATOR_URL', plugins_url( plugin_basename( dirname( __FILE__ ) ) . '/' ) );
-define( 'ZONINATOR_SEARCH_POSTS_PER_PAGE', 10 );
 
 require_once( ZONINATOR_PATH . '/functions.php' );
 require_once( ZONINATOR_PATH . '/widget.zone-posts.php');
@@ -54,6 +53,7 @@ class Zoninator
 		// Add additional properties here!
 	);
 	var $zone_messages = null;
+	var $posts_per_page = 10;
 	
 	function __construct() {
 		add_action( 'init', array( $this, 'init' ) );
@@ -615,7 +615,7 @@ class Zoninator
 		if( ! empty( $q ) ) {
 			
 			$post_types = $this->get_supported_post_types();
-			$limit = $this->_get_request_var( 'limit', ZONINATOR_SEARCH_POSTS_PER_PAGE );
+			$limit = $this->_get_request_var( 'limit', $this->posts_per_page );
 			$exclude = (array) $this->_get_request_var( 'exclude', array(), 'absint' );
 			
 			$args = array(
