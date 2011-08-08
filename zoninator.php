@@ -191,7 +191,7 @@ class Zoninator
 						// TODO: handle error
 					} else {
 						// Redirect with success message
-						$message = $this->_get_message( sprintf( '%s-success', $action ), true );
+						$message = sprintf( '%s-success', $action );
 						wp_redirect( $this->_get_zone_page_url( array( 'action' => 'edit', 'zone_id' => $zone_id, 'message' => $message ) ) );
 						exit;
 					}
@@ -210,7 +210,7 @@ class Zoninator
 					if( is_wp_error( $result ) ) {
 						$redirect_args = array( 'error' => $result->get_error_messages() );
 					} else {
-						$redirect_args = array( 'message' => $this->_get_message( 'delete-success', true ) );
+						$redirect_args = array( 'message' => 'delete-success' );
 					}
 					
 					wp_redirect( $this->_get_zone_page_url( $redirect_args ) );
@@ -237,7 +237,7 @@ class Zoninator
 		$active_zone_id = $this->_get_request_var( 'zone_id', $default_active_zone, 'absint' );
 		$active_zone = ! empty( $active_zone_id ) ? $this->get_zone( $active_zone_id ) : array();
 		
-		$message = $this->_get_get_var( 'message', '', 'urldecode' );
+		$message = $this->_get_message( $this->_get_get_var( 'message', '', 'urldecode' ) );
 		$error = $this->_get_get_var( 'error', '', 'urldecode' );
 		
 		?>
