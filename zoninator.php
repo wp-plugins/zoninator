@@ -698,7 +698,7 @@ class Zoninator
 		);
 		
 		// Filterize to allow other inputs
-		$args = apply_filters( 'insert_zone', $args );
+		$args = apply_filters( 'zoninator_insert_zone', $args );
 		
 		return wp_insert_term( $name, $this->zone_taxonomy, $args );
 	}
@@ -725,7 +725,7 @@ class Zoninator
 			);
 			
 			// Filterize to allow other inputs
-			$args = apply_filters( 'update_zone', $args, $zone_id, $zone );
+			$args = apply_filters( 'zoninator_update_zone', $args, $zone_id, $zone );
 			
 			return wp_update_term( $zone_id, $this->zone_taxonomy, $args );	
 		}
