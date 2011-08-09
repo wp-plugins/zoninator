@@ -414,7 +414,8 @@ var zoninator = {}
 				active.makeTabVisible();
 
 			// Prevent space from building up next to the last tab if there's more to show
-			if( tabs.last().isTabVisible() ) {
+			var $lastTab = tabs.last();
+			if( $lastTab.length && $lastTab.isTabVisible() ) {
 				margin = fixed.width() - tabsWidth;
 				margin = margin > 0 ? 0 : margin;
 				css[marginFluid] = margin + 'px';
