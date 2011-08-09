@@ -184,12 +184,15 @@ class Zoninator
 						
 					} else {
 						$result = $this->insert_zone( $slug, $name, $details );
-						$zone_id = $result['term_id'];
 					}
 					
 					if( is_wp_error( $result ) ) {
-						// TODO: handle error
+						wp_redirect( add_query_arg( 'message', 'error-general' ) );
+						exit;
 					} else {
+						if( ! $zone_id && isset( $result['term_id'] ) )
+							$zone_id = $result['term_id'];
+						
 						// Redirect with success message
 						$message = sprintf( '%s-success', $action );
 						wp_redirect( $this->_get_zone_page_url( array( 'action' => 'edit', 'zone_id' => $zone_id, 'message' => $message ) ) );
