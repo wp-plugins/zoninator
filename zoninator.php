@@ -1143,25 +1143,6 @@ class Zoninator
 	
 	function _empty_zone_posts_cache( $meta_key ) {
 		return; // TODO: implement
-		
-		$this->cache_delete_group( $meta_key );
-	}
-	
-	function delete_cache_group( $group = 'default' ) {
-		return; // TODO: implement
-		
-		global $wp_object_cache;
-		
-		if( empty( $group ) )
-			$group = 'default';
-
-		if( isset( $wp_object_cache->cache[$group] ) ) {
-			unset( $wp_object_cache->cache[$group] );
-			$this->non_existent_objects[$group] = true;
-			return true;
-		}
-		
-		return false;
 	}
 	
 	function _get_message( $message_id, $encode = false ) {
