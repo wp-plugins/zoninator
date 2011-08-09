@@ -86,7 +86,7 @@ class Zoninator
 		// Register taxonomy
 		if( ! taxonomy_exists( $this->zone_taxonomy ) ) {
 			register_taxonomy( $this->zone_taxonomy, $this->get_supported_post_types(), array(
-				'label' => 'Zones',
+				'label' => __( 'Zones', 'zoninator' ),
 				'hierarchical' => false,
 				'query_var' => false,
 				'rewrite' => false,
