@@ -341,10 +341,13 @@ class Zoninator
 									<input type="text" id="zone-name" name="name" value="<?php echo esc_attr( $zone_name ); ?>" />
 								</div>
 								
+								<?php if( $zone_id ) : ?>
 								<div class="form-field zone-field">
 									<label for="zone-slug"><?php _e( 'Slug', 'zoninator' ); ?></label>
-									<input type="text" id="zone-slug" name="slug" value="<?php echo esc_attr( $zone_slug ); ?>" />
+									<span><?php echo esc_attr( $zone_slug ); ?></span>
+									<input type="hidden" id="zone-slug" name="slug" value="<?php echo esc_attr( $zone_slug ); ?>" />
 								</div>
+								<?php endif; ?>
 								
 								<div class="form-field zone-field">
 									<label for="zone-description"><?php _e( 'Description', 'zoninator' ); ?></label>
@@ -1032,16 +1035,10 @@ class Zoninator
 	}
 	
 	function get_formatted_zone_slug( $slug ) {
-		if( strpos( $slug, $this->zone_term_prefix ) === 0 )
-			return $slug;
-		
-		return $this->zone_term_prefix . $slug;
+		return $slug; // legacy function -- slugs can no longer be changed
 	}
 	function get_unformatted_zone_slug( $slug ) {
-		if( strpos( $slug, $this->zone_term_prefix ) === false )
-			return $slug;
-		
-		return substr( $slug, strlen( $this->zone_term_prefix ) );
+		return $slug; // legacy function -- slugs can no longer be changed
 	}
 	
 	function get_post_id( $post ) {

@@ -54,6 +54,10 @@ Filter the following and change according to your needs:
 
 == Changelog ==
 
+= 0.3 =
+
+* Disable editing and prefixing of slugs. They're just problems waiting to happen...
+
 = 0.2 = 
 
 * Move Zones to a top-level menu so that it's easier to access. And doesn't make much sense hidden under Dashboard.
@@ -70,7 +74,13 @@ Filter the following and change according to your needs:
 
 == Upgrade Notice ==
 
-Nothing to see here...
+= 0.3 =
+
+* Slugs can no longer be edited. This is possibly a breaking change if you're using slugs to get zones or zone posts.
+
+= 0.2 =
+
+* Bunch of bug fixes and code improvements
 
 == Usage Notes ==
 
