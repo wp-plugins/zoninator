@@ -3,7 +3,7 @@ Contributors: batmoo
 Tags: zones, post order, post list, posts, order, zonination, content curation, curation, content management
 Requires at least: 3.0
 Tested up to: 3.3
-Stable tag: 0.1
+Stable tag: 0.2
 
 Curation made easy! Create "zones" then add and order your content!
 
