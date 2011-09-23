@@ -812,6 +812,7 @@ class Zoninator
 			'order' => 'ASC',
 			'posts_per_page' => -1,
 			'showposts' => -1,
+			'post_type' => $this->get_supported_post_types(),
 		);
 		$args = wp_parse_args( $args, $defaults );
 		
