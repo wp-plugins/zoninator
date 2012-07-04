@@ -91,6 +91,7 @@ var zoninator = {}
 						+ '<span class="title">' + item.title + '</span>'
 						+ '<span class="type">' + item.post_type + '</span>'
 						+ '<span class="date">' + item.date + '</span>'
+						+ '<span class="status">' + item.post_status + '</span>'
 						+ '</a>';
 					return $( '<li></li>' )
 						.data( 'item.autocomplete', item )
@@ -262,7 +263,7 @@ var zoninator = {}
 			return zoninator.ajaxErrorCallback(returnData, originalData, successCallback, errorCallback);
 		}
 		
-		console.log('ajaxSuccessCallback', returnData, originalData);
+		//console.log('ajaxSuccessCallback', returnData, originalData);
 		
 		if(returnData.nonce)
 			zoninator.updateAjaxNonce(returnData.nonce);
@@ -282,7 +283,7 @@ var zoninator = {}
 			}
 		}
 		
-		console.log('ajaxErrorCallback', returnData, originalData);
+		//console.log('ajaxErrorCallback', returnData, originalData);
 		
 		if(typeof(errorCallback) === 'function') {
 			return errorCallback(returnData, originalData); 
