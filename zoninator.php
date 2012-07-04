@@ -164,10 +164,11 @@ class Zoninator
 				
 				case 'insert':
 				case 'update':
-					$this->verify_nonce( $action );
-					$this->verify_access( $action );
-					
 					$zone_id = $this->_get_post_var( 'zone_id', 0, 'absint' );
+
+					$this->verify_nonce( $action );
+					$this->verify_access( $action, $zone_id );
+
 					$name = $this->_get_post_var( 'name' );
 					$slug = $this->_get_post_var( 'slug', sanitize_title( $name ) );
 					$details = array(
@@ -201,10 +202,10 @@ class Zoninator
 					break;
 				
 				case 'delete':
-					$this->verify_nonce( $action );
-					$this->verify_access( $action );
-					
 					$zone_id = $this->_get_request_var( 'zone_id', 0, 'absint' );
+
+					$this->verify_nonce( $action );
+					$this->verify_access( $action, $zone_id );
 					
 					if( $zone_id ) {
 						$result = $this->delete_zone( $zone_id );
@@ -330,7 +331,7 @@ class Zoninator
 				<div class="col-wrap zone-col zone-info-col">
 					<div class="form-wrap zone-form zone-info-form">
 						
-						<?php if( $this->_current_user_can_edit_zones() && ! $zone_locked ) : ?>
+						<?php if( $this->_current_user_can_edit_zones( $zone_id ) && ! $zone_locked ) : ?>
 						
 							<form id="zone-info" method="post">
 								
@@ -409,7 +410,7 @@ class Zoninator
 				</div>
 				
 				<div class="col-wrap zone-col zone-posts-col">
-					<div class="zone-posts-wrapper <?php echo $zone_locked ? 'readonly' : ''; ?>">
+					<div class="zone-posts-wrapper <?php echo ! $this->_current_user_can_manage_zones( $zone_id ) || $zone_locked ? 'readonly' : ''; ?>">
 						<?php if( $zone_id ) : ?>
 							<h3><?php _e( 'Zone Content', 'zoninator' ); ?></h3>
 							
@@ -472,7 +473,7 @@ class Zoninator
 			// Copy To
 		);
 		?>
-		<?php echo esc_html( $post->post_title ); ?>
+		<?php echo sprintf( '%s <span class="zone-post-status">(%s)</span>', esc_html( $post->post_title ), esc_html( $post->post_status ) ); ?>
 		
 		<div class="row-actions">
 			<?php echo implode( ' | ', $action_links ); ?>
@@ -516,13 +517,13 @@ class Zoninator
 	}
 	
 	function ajax_add_post() {
-		// Verify nonce
-		$this->verify_nonce( $this->zone_ajax_nonce_action );
-		$this->verify_access();
-		
 		$zone_id = $this->_get_post_var( 'zone_id', 0, 'absint' );
 		$post_id = $this->_get_post_var( 'post_id', 0, 'absint' );
 		
+		// Verify nonce
+		$this->verify_nonce( $this->zone_ajax_nonce_action );
+		$this->verify_access( '', $zone_id );
+
 		// Validate
 		if( ! $zone_id || ! $post_id )
 			$this->ajax_return( 0 );
@@ -548,13 +549,13 @@ class Zoninator
 	}
 	
 	function ajax_remove_post() {
-		// Verify nonce
-		$this->verify_nonce( $this->zone_ajax_nonce_action );
-		$this->verify_access();
-		
 		$zone_id = $this->_get_post_var( 'zone_id', 0, 'absint' );
 		$post_id = $this->_get_post_var( 'post_id', 0, 'absint' );
-		
+
+		// Verify nonce
+		$this->verify_nonce( $this->zone_ajax_nonce_action );
+		$this->verify_access( '', $zone_id );
+
 		// Validate
 		if( ! $zone_id || ! $post_id )
 			$this->ajax_return( 0 );
@@ -573,13 +574,13 @@ class Zoninator
 	}
 
 	function ajax_reorder_posts() {
-		// Verify nonce
-		$this->verify_nonce( $this->zone_ajax_nonce_action );
-		$this->verify_access();
-		
 		$zone_id = $this->_get_post_var( 'zone_id', 0, 'absint' );
 		$post_ids = (array) $this->_get_post_var( 'posts', array(), 'absint' );
-		
+
+		// Verify nonce
+		$this->verify_nonce( $this->zone_ajax_nonce_action );
+		$this->verify_access( '', $zone_id );
+
 		// validate
 		if( ! $zone_id || empty( $post_ids ) )
 			$this->ajax_return( 0 );
@@ -625,17 +626,17 @@ class Zoninator
 				$limit = $this->posts_per_page; 
 			$exclude = (array) $this->_get_request_var( 'exclude', array(), 'absint' );
 			
-			$args = array(
+			$args = apply_filters( 'zoninator_search_args', array(
 				's' => $q,
 				'post__not_in' => $exclude,
 				'posts_per_page' => $limit,
 				'showposts' => $limit,
 				'post_type' => $post_types,
-				'post_status' => 'publish',
+				'post_status' => array( 'publish', 'future' ),
 				'order' => 'DESC',
 				'orderby' => 'post_date',
 				'suppress_filters' => true,
-			);
+			) );
 			
 			$query = new WP_Query( $args );
 			$stripped_posts = array();
@@ -649,6 +650,7 @@ class Zoninator
 					'post_id' => $post->ID,
 					'date' => get_the_time( get_option( 'date_format' ), $post ),
 					'post_type' => $post->post_type,
+					'post_status' => $post->post_status,
 				);
 			}
 			
@@ -658,11 +660,11 @@ class Zoninator
 	}
 
 	function ajax_update_lock() {
-		$this->verify_nonce( $this->zone_ajax_nonce_action );
-		$this->verify_access();
-		
 		$zone_id = $this->_get_post_var( 'zone_id', 0, 'absint' );
-		
+
+		$this->verify_nonce( $this->zone_ajax_nonce_action );
+		$this->verify_access( '', $zone_id );
+
 		if( ! $zone_id )
 			exit;
 		
@@ -785,6 +787,8 @@ class Zoninator
 			}
 			// TODO: remove_object_terms -- but need remove object terms function :(
 		}
+
+		clean_term_cache( $this->get_zone_id( $zone ), $this->zone_taxonomy ); // flush cache for our zone term and related APC caches
 	}
 	
 	function remove_zone_posts( $zone, $posts = null ) {
@@ -802,6 +806,8 @@ class Zoninator
 			if( $post_id )
 				delete_metadata( 'post', $post_id, $meta_key );
 		}
+
+		clean_term_cache( $this->get_zone_id( $zone ), $this->zone_taxonomy ); // flush cache for our zone term and related APC caches
 	}
 
 	function get_zone_posts( $zone, $args = array() ) {
@@ -824,9 +830,17 @@ class Zoninator
 		$defaults = array(
 			'order' => 'ASC',
 			'posts_per_page' => -1,
-			'showposts' => -1,
 			'post_type' => $this->get_supported_post_types(),
+			'ignore_sticky_posts' => '1', // don't want sticky posts messing up our order
 		);
+
+		// Default to published posts on the front-end
+		if ( ! is_admin() )
+			$defaults['post_status'] = array( 'publish' );
+
+		if ( is_admin() ) // skip APC in the admin
+			$defaults['suppress_filters'] = true; 
+
 		$args = wp_parse_args( $args, $defaults );
 		
 		// Un-overridable args
@@ -1075,7 +1089,7 @@ class Zoninator
 			$this->_unauthorized_access();
 	}
 	
-	function verify_access( $action = '' ) {
+	function verify_access( $action = '', $zone_id = null ) {
 		// TODO: should check if zone locked
 		
 		$verify_function = '';
@@ -1092,7 +1106,7 @@ class Zoninator
 				break;
 		}
 		
-		if( ! call_user_func( array( $this, $verify_function ) ) )
+		if( ! call_user_func( array( $this, $verify_function ), $zone_id ) )
 			$this->_unauthorized_access();
 	}
 	
@@ -1171,8 +1185,9 @@ class Zoninator
 		return current_user_can( $this->_get_add_zones_cap() );
 	}
 	
-	function _current_user_can_edit_zones() {
-		return current_user_can( $this->_get_edit_zones_cap() );
+	function _current_user_can_edit_zones( $zone_id ) {
+		$has_cap = current_user_can( $this->_get_edit_zones_cap() );
+		return apply_filters( 'zoninator_current_user_can_edit_zone', $has_cap, $zone_id );
 	}
 	
 	function _current_user_can_manage_zones() {
@@ -1180,15 +1195,15 @@ class Zoninator
 	}
 	
 	function _get_add_zones_cap() {
-		return apply_filters( 'zoninator_add_zone_cap', 'manage_options' );
+		return apply_filters( 'zoninator_add_zone_cap', 'edit_others_posts' );
 	}
 	
 	function _get_edit_zones_cap() {
-		return apply_filters( 'zoninator_edit_zone_cap', 'manage_options' );
+		return apply_filters( 'zoninator_edit_zone_cap', 'edit_others_posts' );
 	}
 	
 	function _get_manage_zones_cap() {
-		return apply_filters( 'zoninator_manage_zone_cap', 'edit_published_posts' );
+		return apply_filters( 'zoninator_manage_zone_cap', 'edit_others_posts' );
 	}
 	
 	function _get_zone_page_url( $args = array() ) {
